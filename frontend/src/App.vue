@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useThemeStore } from "@/stores/theme.ts";
+
+useThemeStore()
 </script>
 
 <template>
