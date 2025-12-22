@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import Auth from "@/components/layers/Auth.vue";
+import DarkModeSwitcher from "@/components/buttons/DarkModeSwitcher.vue";
 
 const formSchema = toTypedSchema(
     z.object({
@@ -51,7 +52,13 @@ const onSubmit = handleSubmit((data) => {
     <div class="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <div class="flex justify-between items-center">
+            <CardTitle>Login to your account</CardTitle>
+            <dark-mode-switcher
+                variant="outline"
+                class="rounded-full w-8 h-8"
+            />
+          </div>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
