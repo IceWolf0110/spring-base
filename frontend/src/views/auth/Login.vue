@@ -55,7 +55,7 @@ const onSubmit = handleSubmit((data) => {
           <div class="flex justify-between items-center">
             <CardTitle>Login to your account</CardTitle>
             <dark-mode-switcher
-                variant="outline"
+                variant="ghost"
                 class="rounded-full w-8 h-8"
             />
           </div>
