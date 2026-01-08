@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia';
-import { useDark, useToggle } from '@vueuse/core';
+import { defineStore } from 'pinia'
+import { useDark, useToggle } from '@vueuse/core'
 
 export const useThemeStore = defineStore('counter', () => {
-  const isDark = useDark();
-  const toggleDark = useToggle(isDark);
+	const isDark = useDark()
+	const toggleDark = useToggle(isDark)
 
-  return { isDark, toggleDark }
+	return { isDark, toggleDark }
 })

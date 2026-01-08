@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useThemeStore } from "@/stores/theme.ts";
+	import { useDark } from '@vueuse/core'
 
-useThemeStore()
+	useDark()
 </script>
 
 <template>
-  <router-view/>
+	<router-view />
 </template>
 
 <style scoped></style>
