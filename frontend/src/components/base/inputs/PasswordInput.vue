@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, ref, useModel } from 'vue'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Input } from '@/components/shadcn/input'
+import { Button } from '@/components/shadcn/button'
 import { Icon } from '@iconify/vue'
 import { cn } from '@/lib/utils.ts'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PrimitiveProps } from 'reka-ui'
-import { Button, type ButtonVariants } from '@/components/ui/button'
+import { Button, type ButtonVariants } from '@/components/shadcn/button'
 import type { HTMLAttributes } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useThemeStore } from '@/stores/theme.ts'

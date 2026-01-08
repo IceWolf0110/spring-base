@@ -3,7 +3,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { useForm, Field as VeeField } from 'vee-validate'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/shadcn/button'
 import {
 	Card,
 	CardContent,
@@ -11,9 +11,9 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '@/components/ui/card'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+} from '@/components/shadcn/card'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/shadcn/field'
+import { Input } from '@/components/shadcn/input'
 import AuthLayout from '@/components/layouts/AuthLayout.vue'
 import DarkModeSwitcher from '@/components/base/buttons/DarkModeSwitcher.vue'
 import PasswordInput from '@/components/base/inputs/PasswordInput.vue'
