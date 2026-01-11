@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long? = null,
+    val id: Long = 0,
 
     @Column(unique = true, nullable = false)
     private var username: String?,
@@ -35,6 +35,4 @@ class User(
     override fun getPassword(): String = password ?: ""
 
     override fun getUsername(): String = username ?: ""
-
-    fun getId(): Long? = id
 }

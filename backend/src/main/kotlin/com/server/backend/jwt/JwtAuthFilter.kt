@@ -8,34 +8,33 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 
-@Component
+@Service
 class JwtAuthFilter(
     private val userDetailsService: UserDetailsService,
     private val jwtService: JwtService
-) : OncePerRequestFilter(
-) {
+) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        filterChain: FilterChain?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
     ) {
-        val authHeader: String? = request?.getHeader("Authorization")
+        val authHeader: String? = request.getHeader("Authorization")
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain?.doFilter(request, response)
+            filterChain.doFilter(request, response)
             return
         }
 
         val token: String = authHeader.substring(7)
 
         if (!jwtService.isAccessToken(token)) {
-            filterChain?.doFilter(request, response)
+            filterChain.doFilter(request, response)
             return
         }
 
@@ -58,6 +57,6 @@ class JwtAuthFilter(
             }
         }
 
-        filterChain?.doFilter(request, response)
+        filterChain.doFilter(request, response)
     }
 }
