@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service
 import java.util.*
 import javax.crypto.SecretKey
 import kotlin.io.encoding.Base64
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 
 @Service
 class JwtService {
     private val secretKey: String = generateSecretKey()
-    private val accessExpiration: Long = 15 * 60 * 1000
-    private val refreshExpiration: Long = 7 * 24 * 60 * 60 * 1000
+    private val accessExpiration: Long = 15.minutes.inWholeMilliseconds
+    private val refreshExpiration: Long = 7.days.inWholeMilliseconds
     private val tokenTypeClaim = "type"
     private val accessTokenType = "access"
     private val refreshTokenType = "refresh"
