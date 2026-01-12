@@ -33,6 +33,11 @@ class JwtAuthFilter(
 
         val token: String = authHeader.substring(7)
 
+        if (jwtService.isBlacklistedToken(token)) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         if (!jwtService.isAccessToken(token)) {
             filterChain.doFilter(request, response)
             return

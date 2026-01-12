@@ -1,6 +1,13 @@
 package com.server.backend.auth
 
-import com.server.backend.auth.dto.*
+import com.server.backend.auth.dto.request.LoginRequest
+import com.server.backend.auth.dto.request.LogoutRequest
+import com.server.backend.auth.dto.request.RefreshTokenRequest
+import com.server.backend.auth.dto.request.RegisterRequest
+import com.server.backend.auth.dto.response.LoginResponse
+import com.server.backend.auth.dto.response.LogoutResponse
+import com.server.backend.auth.dto.response.RefreshTokenResponse
+import com.server.backend.auth.dto.response.RegisterResponse
 import com.server.backend.jwt.JwtService
 import com.server.backend.user.User
 import com.server.backend.user.UserRepo
@@ -14,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.time.Duration.Companion.hours
 
 @Service
 class AuthService(
@@ -25,7 +33,9 @@ class AuthService(
 ) {
     private val encoder = BCryptPasswordEncoder()
 
-    fun register(request: RegisterRequest): ResponseEntity<RegisterResponse> {
+    fun register(
+        request: RegisterRequest
+    ) : ResponseEntity<RegisterResponse> {
         if (request.password.isEmpty() || request.username.isEmpty() ) {
             return ResponseEntity.badRequest().body(RegisterResponse())
         }
@@ -66,13 +76,18 @@ class AuthService(
         )
     }
 
-    fun login(request: LoginRequest): ResponseEntity<LoginResponse> {
+    fun login(
+        request: LoginRequest
+    ) : ResponseEntity<LoginResponse> {
         if (request.password.isEmpty() || request.username.isEmpty() ) {
-            return ResponseEntity.badRequest().body(LoginResponse(
-                token = null,
-                message = "Invalid username or password",
-                user = null
-            ))
+            return ResponseEntity.badRequest().body(
+                LoginResponse(
+                    refreshToken = null,
+                    accessToken = null,
+                    message = "Invalid username or password",
+                    user = null
+                )
+            )
         }
 
         val username = request.username
@@ -81,7 +96,8 @@ class AuthService(
             .status(HttpStatus.NOT_FOUND)
             .body(
                 LoginResponse(
-                    token = null,
+                    refreshToken = null,
+                    accessToken = null,
                     message = "User not found!",
                     user = null
                 )
@@ -96,18 +112,47 @@ class AuthService(
             )
         )
 
+        val refreshToken = jwtService.generateRefreshToken(user)
         val accessToken = jwtService.generateAccessToken(user)
 
         return ResponseEntity.ok(
             LoginResponse(
-                token = accessToken,
+                refreshToken = refreshToken,
+                accessToken = accessToken,
                 message = "User login successful!",
                 user = userService.toUserResponse(user)
             )
         )
     }
 
-    fun refreshToken(request: RefreshTokenRequest): ResponseEntity<RefreshTokenResponse> {
+    fun logout(
+        authHeader: String,
+        request: LogoutRequest
+    ) : ResponseEntity<LogoutResponse> {
+        val accessToken = authHeader.substring(7)
+
+        jwtService.blacklistToken(
+            accessToken,
+            jwtService.extractExpiration(accessToken)
+        )
+
+        request.refreshToken.let { refreshToken ->
+            jwtService.blacklistToken(
+                refreshToken,
+                jwtService.extractExpiration(refreshToken)
+            )
+        }
+
+        return ResponseEntity.ok(
+            LogoutResponse(
+                message = "Logged out successfully"
+            )
+        )
+    }
+
+    fun refreshToken(
+        request: RefreshTokenRequest
+    ) : ResponseEntity<RefreshTokenResponse> {
         val refreshToken = request.refreshToken
 
         if (refreshToken.isEmpty()) {
@@ -129,7 +174,7 @@ class AuthService(
 
         val expiration = jwtService.extractExpiration(refreshToken)
 
-        val newRefreshToken = if (expiration.time - Date().time <= 60 * 60 * 1000) {
+        val newRefreshToken = if (expiration.time - Date().time <= 1.hours.inWholeMilliseconds) {
             jwtService.generateRefreshToken(userDetails)
         } else {
             null

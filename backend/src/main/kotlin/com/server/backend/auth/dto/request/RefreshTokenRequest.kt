@@ -1,4 +1,4 @@
-package com.server.backend.auth.dto
+package com.server.backend.auth.dto.request
 
 data class RefreshTokenRequest (
     val refreshToken: String
