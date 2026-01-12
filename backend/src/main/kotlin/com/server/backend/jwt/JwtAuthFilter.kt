@@ -1,5 +1,6 @@
 package com.server.backend.jwt
 
+import com.server.backend.user.UserRepo
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
@@ -15,7 +16,8 @@ import java.io.IOException
 @Service
 class JwtAuthFilter(
     private val userDetailsService: UserDetailsService,
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val userRepo: UserRepo
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
@@ -44,6 +46,11 @@ class JwtAuthFilter(
         }
 
         val username: String = jwtService.extractUsername(token)
+
+        if (userRepo.findByUsername(username) == null) {
+            filterChain.doFilter(request, response)
+            return
+        }
 
         if (SecurityContextHolder.getContext().authentication == null) {
             val userDetails = userDetailsService.loadUserByUsername(username)
