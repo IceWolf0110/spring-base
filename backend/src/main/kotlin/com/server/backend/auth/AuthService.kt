@@ -82,8 +82,8 @@ class AuthService(
         if (request.password.isEmpty() || request.username.isEmpty() ) {
             return ResponseEntity.badRequest().body(
                 LoginResponse(
-                    refreshToken = null,
                     accessToken = null,
+                    refreshToken = null,
                     message = "Invalid username or password",
                     user = null
                 )
@@ -96,8 +96,8 @@ class AuthService(
             .status(HttpStatus.NOT_FOUND)
             .body(
                 LoginResponse(
-                    refreshToken = null,
                     accessToken = null,
+                    refreshToken = null,
                     message = "User not found!",
                     user = null
                 )
@@ -117,8 +117,8 @@ class AuthService(
 
         return ResponseEntity.ok(
             LoginResponse(
-                refreshToken = refreshToken,
                 accessToken = accessToken,
+                refreshToken = refreshToken,
                 message = "User login successful!",
                 user = userService.toUserResponse(user)
             )
