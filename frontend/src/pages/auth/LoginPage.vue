@@ -18,6 +18,7 @@ import AuthLayout from '@/components/layouts/AuthLayout.vue'
 import DarkModeSwitcher from '@/components/base/buttons/DarkModeSwitcher.vue'
 import PasswordInput from '@/components/base/inputs/PasswordInput.vue'
 import { Checkbox } from '@/components/shadcn/checkbox'
+import { useAuthStore } from '@/stores/auth.ts'
 
 const formSchema = toTypedSchema(
 	z.object({
@@ -43,7 +44,11 @@ const { handleSubmit } = useForm({
 })
 
 const onSubmit = handleSubmit((data) => {
-	console.log(data)
+	const username = data.username
+	const password = data.password
+	const rememberMe = data.rememberMe
+
+	useAuthStore().login(username, password, rememberMe)
 })
 </script>
 
