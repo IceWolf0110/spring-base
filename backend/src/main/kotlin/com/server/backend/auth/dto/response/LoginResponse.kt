@@ -1,10 +1,9 @@
 package com.server.backend.auth.dto.response
 
-import com.server.backend.user.dto.UserResponse
+import com.server.backend.user.dto.response.UserResponse
 
 data class LoginResponse(
-    val refreshToken: String?,
     val accessToken: String?,
+    val refreshToken: String?,
     val message: String?,
-    val user: UserResponse?,
 )

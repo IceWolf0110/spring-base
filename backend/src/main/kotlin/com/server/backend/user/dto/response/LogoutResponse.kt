@@ -1,4 +1,4 @@
-package com.server.backend.auth.dto.response
+package com.server.backend.user.dto.response
 
 data class LogoutResponse(
     val message: String

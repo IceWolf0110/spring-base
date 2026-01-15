@@ -3,9 +3,9 @@ import type { PrimitiveProps } from 'reka-ui'
 import { Button, type ButtonVariants } from '@/components/shadcn/button'
 import type { HTMLAttributes } from 'vue'
 import { Icon } from '@iconify/vue'
-import { useThemeStore } from '@/stores/theme.ts'
+import { useDarkModeStore } from '@/stores/dark-mode.ts'
 
-const store = useThemeStore()
+const store = useDarkModeStore()
 
 interface Props extends PrimitiveProps {
 	variant?: ButtonVariants['variant']

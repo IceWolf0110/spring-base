@@ -12,7 +12,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/shadcn/card'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/shadcn/field'
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from '@/components/shadcn/field'
 import { Input } from '@/components/shadcn/input'
 import AuthLayout from '@/components/layouts/AuthLayout.vue'
 import DarkModeSwitcher from '@/components/base/buttons/DarkModeSwitcher.vue'
@@ -43,12 +49,14 @@ const { handleSubmit } = useForm({
 	},
 })
 
+const store = useAuthStore()
+
 const onSubmit = handleSubmit((data) => {
 	const username = data.username
 	const password = data.password
 	const rememberMe = data.rememberMe
 
-	useAuthStore().login(username, password, rememberMe)
+	store.login(username, password, rememberMe)
 })
 </script>
 

@@ -59,12 +59,14 @@ const { handleSubmit } = useForm({
 	},
 })
 
+const store = useAuthStore()
+
 const onSubmit = handleSubmit((data) => {
 	const username = data.username
 	const email = data.password
 	const password = data.password
 
-	useAuthStore().register(username, email, password)
+	store.register(username, email, password)
 })
 </script>
 
