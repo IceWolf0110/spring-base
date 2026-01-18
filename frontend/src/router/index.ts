@@ -1,32 +1,25 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/pages/HomePage.vue'
-import LoginPage from '@/pages/auth/LoginPage.vue'
-import RegisterPage from '@/pages/auth/RegisterPage.vue'
+import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalizedGeneric } from 'vue-router'
+import routes from '@/router/router.ts'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
-	routes: [
-		{
-			path: '/',
-			name: 'home',
-			component: HomePage,
-		},
-		{
-			path: '/auth',
-			children: [
-				{
-					path: 'login',
-					name: 'login',
-					component: LoginPage,
-				},
-				{
-					path: 'register',
-					name: 'register',
-					component: RegisterPage,
-				},
-			],
-		},
-	],
+	routes: routes,
 })
+
+router.beforeEach(
+	async (
+		to: RouteLocationNormalizedGeneric,
+		_: RouteLocationNormalizedGeneric,
+		next: NavigationGuardNext,
+	): Promise<void> => {
+		document.title = (to.meta?.title as string) ?? 'test app'
+
+		if (to.meta?.requiresAuth) {
+			next({ name: 'login' })
+		}
+
+		next()
+	},
+)
 
 export default router

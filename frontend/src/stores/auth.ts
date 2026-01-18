@@ -2,11 +2,11 @@ import { defineStore } from 'pinia'
 import axiosClient from '@/lib/axios-client.ts'
 import router from '@/router'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { ref } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 
 export const useAuthStore = defineStore('auth', () => {
-	const token = ref<string|null>(null)
+	let accessToken
+	let refreshToken
 
 	const cookies = useCookies()
 
@@ -15,6 +15,8 @@ export const useAuthStore = defineStore('auth', () => {
 		password: string,
 		rememberMe: boolean
 	) => {
+		cookies.remove('refreshToken')
+
 		try {
 			const response = await axiosClient.post('/auth/login', {
 				username: username,
@@ -23,8 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
 
 			const data = response.data
 
-			const accessToken = data.accessToken
-			const refreshToken = data.refreshToken
+			accessToken = data.accessToken
+			refreshToken = data.refreshToken
 
 			const refreshTokenExpiration = jwtDecode(refreshToken)?.exp
 			const oneHourFromLoginTime = new Date(Date.now() + 60 * 60 * 1000)
@@ -39,7 +41,6 @@ export const useAuthStore = defineStore('auth', () => {
 				expires: expirationDate,
 			})
 
-			token.value = accessToken
 			await router.push({ name: 'home' })
 		} catch (e) {
 			console.log(e)
@@ -50,7 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
 		username: string,
 		email: string | null,
 		password: string
-	): Promise<void> => {
+	) => {
 		try {
 			await axiosClient.post('/auth/register', {
 				username: username,
@@ -64,21 +65,21 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 	}
 
-	const isRefreshTokenValid = async (
-		token: string
-	): Promise<void>  => {
-		await axiosClient
-			.post('/auth/validate-refresh-token', {
-				refreshToken: token,
-			})
-			.then(() => {
+	const isRefreshTokenValid = async () => {
 
-			})
+
+		// await axiosClient
+		// 	.post('/auth/validate-refresh-token', {
+		// 		refreshToken: token,
+		// 	})
+		// 	.then(() => {
+		//
+		// 	})
 	}
 
-	const isLoggedIn = (): boolean => {
-		return cookies.get('refreshToken') !== undefined
+	const isLoggedIn = ()=> {
+		return false
 	}
 
-	return { token, login, register }
+	return { accessToken, refreshToken, login, register }
 })

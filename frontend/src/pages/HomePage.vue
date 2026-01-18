@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import WebLayout from '@/components/layouts/WebLayout.vue'
-import { useDark } from '@vueuse/core'
-
-useDark()
+	import WebLayout from '@/components/layouts/WebLayout.vue'
 </script>
 
 <template>

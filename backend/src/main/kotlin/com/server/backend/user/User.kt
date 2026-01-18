@@ -19,20 +19,20 @@ class User(
     val id: Long = 0,
 
     @Column(unique = true, nullable = false)
-    private var username: String?,
+    private var username: String,
 
     @Column(unique = true)
     var email: String? = null,
 
     @Column(nullable = false)
-    private var password: String?,
+    private var password: String,
 
     @Enumerated(EnumType.STRING)
     val role: UserRole
 ) : UserDetails {
     override fun getAuthorities() = listOf(SimpleGrantedAuthority(role.name))
 
-    override fun getPassword(): String = password ?: ""
+    override fun getPassword(): String = password
 
-    override fun getUsername(): String = username ?: ""
+    override fun getUsername(): String = username
 }
