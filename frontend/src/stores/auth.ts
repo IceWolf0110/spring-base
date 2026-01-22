@@ -3,10 +3,11 @@ import axiosClient from '@/lib/axios-client.ts'
 import router from '@/router'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { jwtDecode } from 'jwt-decode'
+import { ref } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
 	let accessToken
-	let refreshToken
+	let isLoggedIn = ref<boolean>(false)
 
 	const cookies = useCookies()
 
@@ -26,16 +27,17 @@ export const useAuthStore = defineStore('auth', () => {
 			const data = response.data
 
 			accessToken = data.accessToken
-			refreshToken = data.refreshToken
+
+			const refreshToken = data.refreshToken
 
 			const refreshTokenExpiration = jwtDecode(refreshToken)?.exp
-			const oneHourFromLoginTime = new Date(Date.now() + 60 * 60 * 1000)
+			const defaultLoginDur = new Date(Date.now() + 60 * 60 * 1000)
 
 			const expirationDate = rememberMe
 				? refreshTokenExpiration !== undefined
 					? new Date(refreshTokenExpiration * 1000)
-					: oneHourFromLoginTime
-				: oneHourFromLoginTime
+					: defaultLoginDur
+				: defaultLoginDur
 
 			cookies.set('refreshToken', refreshToken, {
 				expires: expirationDate,
@@ -65,21 +67,32 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 	}
 
-	const isRefreshTokenValid = async () => {
+	const getRefreshToken = () => {
+		const refreshToken = useCookies().get('refreshToken')
 
+		if (!refreshToken)
+			return ''
 
-		// await axiosClient
-		// 	.post('/auth/validate-refresh-token', {
-		// 		refreshToken: token,
-		// 	})
-		// 	.then(() => {
-		//
-		// 	})
+		return refreshToken
 	}
 
-	const isLoggedIn = ()=> {
-		return false
+	const isLoggedInCheck = async () => {
+		const refreshToken = getRefreshToken()
+
+		if (!refreshToken) {
+			return
+		}
+
+		try {
+			const response = await axiosClient.post('/auth/validate-refresh-token', {
+				refreshToken: refreshToken,
+			})
+
+			isLoggedIn.value = !!response.data.isValidToken
+		} catch (e) {
+			console.log(e)
+		}
 	}
 
-	return { accessToken, refreshToken, login, register }
+	return { accessToken, isLoggedIn, login, register, isLoggedInCheck }
 })

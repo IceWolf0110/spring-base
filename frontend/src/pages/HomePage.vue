@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import WebLayout from '@/components/layouts/WebLayout.vue'
+import WebLayout from '@/components/layouts/WebLayout.vue'
 </script>
 
 <template>

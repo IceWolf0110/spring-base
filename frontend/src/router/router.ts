@@ -40,7 +40,7 @@ const routes = [
 				component: RegisterPage,
 				meta: {
 					title: 'Game',
-					requiresAuth: true,
+					requiresAuth: false,
 				},
 			},
 		],

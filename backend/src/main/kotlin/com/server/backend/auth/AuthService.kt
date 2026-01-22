@@ -125,7 +125,7 @@ class AuthService(
     ) : ResponseEntity<NewRefreshTokenResponse> {
         val refreshToken = request.refreshToken
 
-        if (!isTokenValid(refreshToken)) {
+        if (!isTokenRefreshValid(refreshToken)) {
             return ResponseEntity.status(401).body(
                 NewRefreshTokenResponse(message = "Invalid or expired refresh token")
             )
@@ -157,12 +157,12 @@ class AuthService(
     ): ResponseEntity<ValidateRefreshTokenResponse> {
         return ResponseEntity.ok(
             ValidateRefreshTokenResponse(
-                isValidToken = isTokenValid(request.refreshToken),
+                isValidToken = isTokenRefreshValid(request.refreshToken),
             )
         )
     }
 
-    private fun isTokenValid(token: String): Boolean {
+    private fun isTokenRefreshValid(token: String): Boolean {
         if (token.isEmpty()) {
             return false
         }
